@@ -37,3 +37,8 @@ def estadisticas_edad(db: Session) -> dict:
         "edad_minima": int(fila["edad_minima"]) if fila["edad_minima"] is not None else None,
         "edad_maxima": int(fila["edad_maxima"]) if fila["edad_maxima"] is not None else None,
     }
+
+
+def reporte_activos(db: Session) -> Sequence[Persona]:
+    """Personas con is_active = true."""
+    return db.query(Persona).filter(Persona.is_active.is_(True)).order_by(Persona.id).all()
