@@ -1,9 +1,7 @@
 import random
 import unicodedata
-
 from faker import Faker
 from sqlalchemy.orm import Session
-
 from ..models.persona import Persona
 
 fake = Faker("es_CO")
@@ -55,3 +53,8 @@ def poblar_personas(db: Session, cantidad: int) -> int:
     db.add_all(nuevas)
     db.commit()
     return len(nuevas)
+
+def borrar_todas(db: Session) -> int:
+    total = db.query(Persona).delete()
+    db.commit()
+    return total
