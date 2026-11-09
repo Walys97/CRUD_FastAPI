@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..services import consultas_service
-from ..views.consultas import PersonaDetalle
+from ..views.consultas import DesactivarRequest, DesactivarResponse, PersonaDetalle
 
 router = APIRouter(prefix="/personas", tags=["búsquedas y filtros"])
 
@@ -29,3 +29,14 @@ def cumpleanios_del_mes(numero_mes: str, db: Session = Depends(get_db)):
             detail="El mes debe ser un entero entre 1 y 12.",
         )
     return consultas_service.cumpleanios_del_mes(db, mes)
+
+
+@router.patch("/bulk/desactivar", response_model=DesactivarResponse)
+def desactivar_masivo(datos: DesactivarRequest, db: Session = Depends(get_db)):
+    """Desactiva una lista de ids (entre 1 y 100). Los ids inexistentes se reportan."""
+    if not datos.ids or len(datos.ids) > 100:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La lista de ids debe tener entre 1 y 100 elementos.",
+        )
+    return consultas_service.desactivar_personas(db, datos.ids)
