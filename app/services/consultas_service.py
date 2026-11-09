@@ -21,3 +21,12 @@ def buscar_personas(db: Session, termino: str) -> Sequence[Persona]:
         .order_by(Persona.id)
         .all()
     )
+
+def reporte_activos(db: Session):
+    """Retorna solo id, email, phone e is_active de los usuarios activos."""
+    return (
+        db.query(Persona.id, Persona.email, Persona.phone, Persona.is_active)
+        .filter(Persona.is_active.is_(True))
+        .order_by(Persona.id)
+        .all()
+    )
