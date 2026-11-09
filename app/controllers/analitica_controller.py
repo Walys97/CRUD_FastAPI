@@ -1,11 +1,11 @@
-from typing import Dict
+from typing import Dict, List
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..services import analitica_service
-from ..views.analitica import EdadEstadisticas
+from ..views.analitica import EdadEstadisticas, PersonaActiva
 
 router = APIRouter(prefix="/personas", tags=["analítica"])
 
@@ -20,3 +20,9 @@ def estadisticas_dominios(db: Session = Depends(get_db)):
 def estadisticas_edad(db: Session = Depends(get_db)):
     """Edad promedio, mínima y máxima."""
     return analitica_service.estadisticas_edad(db)
+
+
+@router.get("/reporte/activos", response_model=List[PersonaActiva])
+def reporte_activos(db: Session = Depends(get_db)):
+    """Listado de usuarios activos con proyección reducida (id, email, phone, is_active)."""
+    return analitica_service.reporte_activos(db)
