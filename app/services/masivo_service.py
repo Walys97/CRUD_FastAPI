@@ -1,5 +1,7 @@
 import random
 import unicodedata
+import csv
+import io
 
 from faker import Faker
 from sqlalchemy.orm import Session
@@ -55,3 +57,21 @@ def poblar_personas(db: Session, cantidad: int) -> int:
     db.add_all(nuevas)
     db.commit()
     return len(nuevas)
+
+COLUMNAS_CSV = [
+    "id", "first_name", "last_name", "email",
+    "phone", "birth_date", "is_active", "notes",
+]
+
+
+def generar_csv(db: Session) -> str:
+    personas = db.query(Persona).order_by(Persona.id).all()
+    salida = io.StringIO()
+    escritor = csv.writer(salida)
+    escritor.writerow(COLUMNAS_CSV)
+    for p in personas:
+        escritor.writerow([
+            p.id, p.first_name, p.last_name, p.email, p.phone,
+            p.birth_date, p.is_active, p.notes or "",
+        ])
+    return salida.getvalue()
