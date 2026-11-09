@@ -131,3 +131,17 @@ curl -s -X DELETE http://127.0.0.1:8000/personas/1 -i
 
 - Si lo iniciaste en la misma terminal: usa `CTRL+C`.
 - Si corre en background, puedes cerrar esa terminal o matar el proceso de uvicorn (`pkill -f uvicorn`).
+
+---
+
+## Laboratorio 1
+
+**Integrantes:** Walys Vera Herrera, Esteban Ramírez, Luis Fernando Grajales
+
+### Quién desarrolló qué
+
+| Integrante | Endpoints |
+|---|---|
+| Walys Vera Herrera | `GET /personas/estadisticas/dominios`, `GET /personas/estadisticas/edad`, `GET /personas/reporte/activos` y configuración inicial |
+| Esteban Ramírez | `POST /personas/poblar`, `DELETE /personas/reset`, `GET /personas/exportar/csv` |
+| Luis Fernando Grajales | `GET /personas/buscar/{termino}`, `GET /personas/cumpleanios/mes/{numero_mes}`, `PATCH /personas/bulk/desactivar` y colección de Postman |
