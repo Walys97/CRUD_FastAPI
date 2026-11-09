@@ -67,6 +67,7 @@ COLUMNAS_CSV = [
 def generar_csv(db: Session) -> str:
     personas = db.query(Persona).order_by(Persona.id).all()
     salida = io.StringIO()
+    salida.write("\ufeff")  #Pa que no salgan raras las tildes en Excel
     escritor = csv.writer(salida)
     escritor.writerow(COLUMNAS_CSV)
     for p in personas:
