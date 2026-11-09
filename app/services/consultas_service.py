@@ -30,3 +30,13 @@ def reporte_activos(db: Session):
         .order_by(Persona.id)
         .all()
     )
+
+
+def cumpleanios_del_mes(db: Session, mes: int) -> Sequence[Persona]:
+    """Personas cuyo mes de nacimiento es `mes`, sin importar el año."""
+    return (
+        db.query(Persona)
+        .filter(func.month(Persona.birth_date) == mes)
+        .order_by(func.day(Persona.birth_date), Persona.id)
+        .all()
+    )
