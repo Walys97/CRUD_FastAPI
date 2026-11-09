@@ -31,3 +31,26 @@ def cumpleanios_del_mes(db: Session, mes: int) -> Sequence[Persona]:
         .order_by(func.day(Persona.birth_date), Persona.id)
         .all()
     )
+
+
+def desactivar_personas(db: Session, ids: list[int]) -> dict:
+    """Desactiva en una sola operación los ids que existen y reporta los que no."""
+    ids_unicos = list(dict.fromkeys(ids))  # quita repetidos conservando el orden
+    filas = db.query(Persona.id).filter(Persona.id.in_(ids_unicos)).all()
+    existentes = {fila.id for fila in filas}
+
+    desactivados = [i for i in ids_unicos if i in existentes]
+    no_encontrados = [i for i in ids_unicos if i not in existentes]
+
+    if desactivados:
+        db.query(Persona).filter(Persona.id.in_(desactivados)).update(
+            {Persona.is_active: False}, synchronize_session=False
+        )
+        db.commit()
+
+    return {
+        "message": "Operación completada.",
+        "desactivados": desactivados,
+        "no_encontrados": no_encontrados,
+        "total_desactivados": len(desactivados),
+    }
