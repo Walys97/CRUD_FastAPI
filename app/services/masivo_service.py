@@ -8,7 +8,11 @@ from ..models.persona import Persona
 
 fake = Faker("es_CO")
 DOMINIOS = ["gmail.com", "outlook.com", "hotmail.com", "yahoo.com"]
-
+NOTAS = ["Cliente frecuente",
+    "Prefiere contacto por correo",
+    "Pendiente de verificación",
+    "Solicitó información adicional",
+    "Contactar en horario de la tarde",]
 
 def _limpiar(texto: str) -> str:
     """Quita tildes, espacios y mayúsculas para armar el email."""
@@ -44,7 +48,7 @@ def poblar_personas(db: Session, cantidad: int) -> int:
                 phone=_telefono(),
                 birth_date=fake.date_of_birth(minimum_age=18, maximum_age=85),
                 is_active=random.choice([True, False]),
-                notes=random.choice([None, fake.sentence(nb_words=6)]),
+                notes=random.choice([None, random.choice(NOTAS)]),
             )
         )
 
