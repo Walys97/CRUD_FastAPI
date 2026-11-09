@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db  # <-- copia la línea de persona_controller.py
 from ..services import masivo_service
-from ..views.masivo import PoblarRequest, PoblarResponse
+from ..views.masivo import PoblarRequest, PoblarResponse, ResetResponse
 
 router = APIRouter(prefix="/personas", tags=["masivo"])
 
@@ -17,3 +17,11 @@ def poblar(datos: PoblarRequest, db: Session = Depends(get_db)):
         )
     creados = masivo_service.poblar_personas(db, datos.cantidad)
     return {"message": f"{creados} usuarios creados exitosamente", "status": 201}
+
+@router.delete("/reset", response_model=ResetResponse)
+def reset(db: Session = Depends(get_db)):
+    borrados = masivo_service.borrar_todas(db)
+    return {
+        "message": "Base de datos limpiada. Se eliminaron todos los registros.",
+        "deleted_count": borrados,
+       }
