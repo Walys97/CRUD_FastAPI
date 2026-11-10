@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from fastapi.responses import StreamingResponse
 from ..database import get_db  # <-- copia la línea de persona_controller.py
 from ..services import masivo_service
 from ..views.masivo import PoblarRequest, PoblarResponse, ResetResponse
@@ -25,3 +25,10 @@ def reset(db: Session = Depends(get_db)):
         "message": "Base de datos limpiada. Se eliminaron todos los registros.",
         "deleted_count": borrados,
        }
+@router.get("/exportar/csv")
+def exportar_csv(db: Session = Depends(get_db)):
+    contenido = masivo_service.generar_csv(db)
+    return StreamingResponse(
+        iter([contenido]),
+        media_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="personas.csv"'},)
