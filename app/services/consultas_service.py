@@ -6,16 +6,25 @@ from sqlalchemy.orm import Session
 from ..models.persona import Persona
 
 
+def _escapar_like(texto: str) -> str:
+    """Escapa los comodines de LIKE para buscar el texto de forma literal."""
+    return (
+        texto.replace("!", "!!")
+        .replace("%", "!%")
+        .replace("_", "!_")
+    )
+
+
 def buscar_personas(db: Session, termino: str) -> Sequence[Persona]:
     """Busca el término en first_name, last_name O email (LIKE %termino%)."""
-    patron = f"%{termino}%"
+    patron = f"%{_escapar_like(termino)}%"
     return (
         db.query(Persona)
         .filter(
             or_(
-                Persona.first_name.like(patron),
-                Persona.last_name.like(patron),
-                Persona.email.like(patron),
+                Persona.first_name.like(patron, escape="!"),
+                Persona.last_name.like(patron, escape="!"),
+                Persona.email.like(patron, escape="!"),
             )
         )
         .order_by(Persona.id)

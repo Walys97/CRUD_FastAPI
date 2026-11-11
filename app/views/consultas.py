@@ -1,6 +1,7 @@
 from datetime import date
+from typing import Annotated
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PersonaDetalle(BaseModel):
@@ -18,8 +19,8 @@ class PersonaDetalle(BaseModel):
 
 
 class DesactivarRequest(BaseModel):
-    """Body del PATCH: lista de ids a desactivar."""
-    ids: list[int]
+    """Body del PATCH: lista de ids a desactivar (enteros positivos)."""
+    ids: list[Annotated[int, Field(gt=0)]]
 
 
 class DesactivarResponse(BaseModel):
